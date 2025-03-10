@@ -1,0 +1,9 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/process-nfts",
+      "schedule": "0 0 * * *"
+    }
+  ]
+}
+
