@@ -141,6 +141,13 @@ export function FiatPurchase() {
       console.error("Estimate error:", error)
       setErrorMessage(error.message || "Failed to get exchange estimate")
       setStatus("error")
+
+      // Reset to idle state after error
+      setTimeout(() => {
+        if (status === "error") {
+          setStatus("idle")
+        }
+      }, 3000)
     }
   }, [fromAmount, fromCurrency, toCurrency])
 

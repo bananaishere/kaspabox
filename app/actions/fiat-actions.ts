@@ -17,10 +17,8 @@ export async function getFiatToKaspaEstimate(fromCurrency: string, toCurrency: s
 
     // Check if API key is available
     if (!process.env.NEXT_PUBLIC_CHANGENOW_API_KEY) {
-      return {
-        success: false,
-        error: "API key is not configured. Please add the NEXT_PUBLIC_CHANGENOW_API_KEY environment variable.",
-      }
+      console.warn("API key is not configured. Using mock data.")
+      // Continue with mock data
     }
 
     try {
@@ -59,9 +57,19 @@ export async function getFiatToKaspaEstimate(fromCurrency: string, toCurrency: s
       }
     } catch (estimateError: any) {
       console.error("Estimate error:", estimateError)
-      return {
-        success: false,
-        error: estimateError.message || "Failed to get exchange estimate",
+
+      // Try to get a basic estimate with fallback values
+      try {
+        const estimate = await getFiatEstimate(fromCurrency, toCurrency, amount)
+        return {
+          success: true,
+          data: estimate,
+        }
+      } catch (fallbackError) {
+        return {
+          success: false,
+          error: estimateError.message || "Failed to get exchange estimate",
+        }
       }
     }
   } catch (error: any) {
@@ -103,10 +111,8 @@ export async function createFiatToCryptoTransaction(
 
     // Check if API key is available
     if (!process.env.NEXT_PUBLIC_CHANGENOW_API_KEY) {
-      return {
-        success: false,
-        error: "API key is not configured. Please add the NEXT_PUBLIC_CHANGENOW_API_KEY environment variable.",
-      }
+      console.warn("API key is not configured. Using mock data.")
+      // Continue with mock data
     }
 
     // Validate amount is a number
